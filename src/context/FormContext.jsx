@@ -37,8 +37,6 @@ export function FormProvider({ children }) {
       reference: initialParams.reference,
       amount: initialParams.amount,
       fullName: '',
-      email: '',
-      phone: '',
       emissionDate: getInitialTodayDate(),
       infractionType: organizationConfig.dossier.infractionType,
     };
@@ -92,22 +90,6 @@ export function FormProvider({ children }) {
       }
     }
 
-    if (field === 'email') {
-      if (!value || !value.trim()) {
-        error = 'L’adresse e-mail est obligatoire pour l’envoi de la confirmation.';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-        error = 'Veuillez saisir une adresse e-mail valide (ex. nom@domaine.fr).';
-      }
-    }
-
-    if (field === 'phone') {
-      if (!value || !value.trim()) {
-        error = 'Le numéro de téléphone est obligatoire.';
-      } else if (!/^[0-9\s+().-]{8,20}$/.test(value.trim())) {
-        error = 'Numéro de téléphone invalide (au moins 8 chiffres).';
-      }
-    }
-
     setErrors((prev) => {
       const updated = { ...prev };
       if (error) {
@@ -122,47 +104,20 @@ export function FormProvider({ children }) {
   };
 
   const validateStep1 = () => {
-    const fieldsToValidate = ['fullName', 'email', 'phone'];
     let isValid = true;
     const newErrors = {};
 
-    fieldsToValidate.forEach((field) => {
-      const val = formData[field];
-      if (field === 'fullName') {
-        if (!val || !val.trim()) {
-          newErrors.fullName = 'Le nom et prénom sont obligatoires.';
-          isValid = false;
-        } else if (val.trim().length < 2) {
-          newErrors.fullName = 'Veuillez saisir un nom valide (au moins 2 caractères).';
-          isValid = false;
-        }
-      }
-
-      if (field === 'email') {
-        if (!val || !val.trim()) {
-          newErrors.email = 'L’adresse e-mail est obligatoire.';
-          isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())) {
-          newErrors.email = 'Veuillez saisir une adresse e-mail valide.';
-          isValid = false;
-        }
-      }
-
-      if (field === 'phone') {
-        if (!val || !val.trim()) {
-          newErrors.phone = 'Le numéro de téléphone est obligatoire.';
-          isValid = false;
-        } else if (!/^[0-9\s+().-]{8,20}$/.test(val.trim())) {
-          newErrors.phone = 'Numéro de téléphone invalide.';
-          isValid = false;
-        }
-      }
-    });
+    const nameVal = formData.fullName;
+    if (!nameVal || !nameVal.trim()) {
+      newErrors.fullName = 'Le nom et prénom sont obligatoires.';
+      isValid = false;
+    } else if (nameVal.trim().length < 2) {
+      newErrors.fullName = 'Veuillez saisir un nom valide (au moins 2 caractères).';
+      isValid = false;
+    }
 
     setTouched({
       fullName: true,
-      email: true,
-      phone: true,
     });
     setErrors(newErrors);
 
@@ -181,7 +136,7 @@ export function FormProvider({ children }) {
         setCurrentStep(2);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        showToast('Veuillez renseigner correctement les champs obligatoires.');
+        showToast('Veuillez renseigner correctement votre nom et prénom.');
       }
       return;
     }
@@ -229,8 +184,6 @@ export function FormProvider({ children }) {
       reference: initialParams.reference,
       amount: initialParams.amount,
       fullName: '',
-      email: '',
-      phone: '',
       emissionDate: getInitialTodayDate(),
       infractionType: organizationConfig.dossier.infractionType,
     });

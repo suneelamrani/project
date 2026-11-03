@@ -42,15 +42,13 @@ export const organizationConfig = {
     infractionType: "Amende forfaitaire de stationnement",
   },
 
-  // Contact Information
+  // Contact Information (Phone and email removed per client request)
   contact: {
     addressLine1: "14 Boulevard Haussmann",
     addressLine2: "CS 90214",
     postalCode: "75009",
     city: "Paris",
     country: "France",
-    phone: "+33 (0)1 89 20 45 00",
-    email: "contact-reglement@service-recouvrement.fr",
     supportHours: "Du lundi au vendredi de 8h30 à 18h00 (CET)",
   },
 

@@ -1,4 +1,4 @@
-import { Shield, Building, Mail, Phone, Clock, FileCheck } from 'lucide-react';
+import { Shield, Building, Clock, FileCheck } from 'lucide-react';
 import { organizationConfig } from '../config/organization';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -68,40 +68,30 @@ export default function Footer() {
               <li className="flex items-start gap-2">
                 <span className="text-blue-400 font-bold">•</span>
                 <span>
-                  <strong>Affectation du dossier :</strong> L'indication exacte de la référence de votre dossier est nécessaire à la clôture de l'amende.
+                  <strong>Affectation du dossier :</strong> L'indication exacte de la référence de votre dossier est requise pour l'affectation du règlement.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-400 font-bold">•</span>
                 <span>
-                  <strong>Justificatif :</strong> Conservez l'avis d'exécution délivré par votre banque pour toute contestation éventuelle.
+                  <strong>Justificatif :</strong> Conservez l'avis d'exécution délivré par votre banque pour toute vérification comptable.
                 </span>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Contact & Horaires */}
+          {/* Col 3: Horaires & Mentions de Service */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold tracking-wider uppercase text-white">
-              Assistance & Contact
+              Permanence du Service
             </h4>
             <div className="text-xs text-slate-400 space-y-2">
               <p className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                <span>{organizationConfig.contact.phone}</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                <a
-                  href={`mailto:${organizationConfig.contact.email}`}
-                  className="hover:text-blue-300 transition-colors underline"
-                >
-                  {organizationConfig.contact.email}
-                </a>
-              </p>
-              <p className="flex items-center gap-2">
                 <Clock className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                <span>{organizationConfig.contact.supportHours}</span>
+                <span>Horaires : {organizationConfig.contact.supportHours}</span>
+              </p>
+              <p className="leading-relaxed">
+                Traitement automatisé des ordres de virement SEPA transmis au service de recouvrement.
               </p>
             </div>
             <div className="pt-2 text-[11px] text-slate-500 border-t border-slate-800">

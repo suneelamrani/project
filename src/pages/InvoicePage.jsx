@@ -62,16 +62,17 @@ export default function InvoicePage() {
         id="invoice-document"
         className="bg-white rounded-2xl border-2 border-slate-300 shadow-md p-6 sm:p-10 md:p-12 space-y-8 print:shadow-none print:border print:border-slate-400 print:p-6 print:rounded-none"
       >
-        {/* Document Header: Client Logo LEFT, Shield & Title RIGHT */}
+        {/* Document Header: Client Logo LEFT (white background), Shield & Title RIGHT */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 border-b-2 border-slate-900 pb-8">
           <div>
-            {/* Client Logo on Left Side (Larger presentation) */}
-            <ClientLogo className="h-14 sm:h-20 w-auto mb-3" />
+            {/* Client Logo on Left Side with crisp white background */}
+            <div className="mb-3">
+              <ClientLogo className="h-14 sm:h-20 w-auto" />
+            </div>
             <div className="text-xs text-slate-600 space-y-0.5 mt-2">
               <p className="font-bold text-slate-900">{organizationConfig.legalName}</p>
               <p>{organizationConfig.entityType} • SIRET : {organizationConfig.siret}</p>
               <p>{organizationConfig.contact.addressLine1}, {organizationConfig.contact.postalCode} {organizationConfig.contact.city}</p>
-              <p>Tél : {organizationConfig.contact.phone} • Email : {organizationConfig.contact.email}</p>
             </div>
           </div>
 
@@ -99,7 +100,7 @@ export default function InvoicePage() {
 
         {/* 2-Columns: Client Details & Assigned Representative */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
-          {/* Recipient / Debtor info */}
+          {/* Recipient / Debtor info (No phone/email per client instruction) */}
           <div className="space-y-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
               Redevable / Titulaire du dossier
@@ -107,16 +108,6 @@ export default function InvoicePage() {
             <p className="text-base font-bold text-slate-900">
               {formData.fullName || 'Destinataire non renseigné'}
             </p>
-            {formData.email && (
-              <p className="text-xs text-slate-600">
-                E-mail : <span className="text-slate-800 font-medium">{formData.email}</span>
-              </p>
-            )}
-            {formData.phone && (
-              <p className="text-xs text-slate-600">
-                Téléphone : <span className="text-slate-800 font-medium">{formData.phone}</span>
-              </p>
-            )}
             <p className="text-xs text-slate-600">
               Nature de l'amende : <span className="text-slate-800 font-medium">{formData.infractionType}</span>
             </p>
@@ -198,7 +189,6 @@ export default function InvoicePage() {
 
         {/* ======================================================== */}
         {/* SECTION 2: VERIFIED ORGANIZATIONAL BANK DETAILS          */}
-        {/* (Cleaned per client request: SAME NAME, Bank & BIC removed) */}
         {/* ======================================================== */}
         <div className="rounded-2xl border border-slate-300 bg-white p-5 sm:p-6 shadow-xs space-y-5">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">

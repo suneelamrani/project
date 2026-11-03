@@ -1,4 +1,4 @@
-import { ArrowRight, Hash, User, Mail, Phone, HelpCircle, ShieldAlert, Lock } from 'lucide-react';
+import { ArrowRight, Hash, User, HelpCircle, ShieldAlert, Lock } from 'lucide-react';
 import { useFormContext } from '../context/FormContext';
 import FormInput from '../components/FormInput';
 import NoticeBanner from '../components/NoticeBanner';
@@ -32,7 +32,7 @@ export default function InformationPage() {
             Règlement de votre dossier d'amende
           </h1>
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Consultez les détails de votre dossier ci-dessous et complétez vos coordonnées afin d'accéder au bordereau officiel de virement bancaire SEPA.
+            Consultez les détails de votre dossier ci-dessous et indiquez votre identité afin d'accéder au bordereau officiel de virement bancaire SEPA.
           </p>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function InformationPage() {
         {/* Security & Instruction Alert */}
         <NoticeBanner type="info" title="Informations officielles du dossier">
           <p>
-            Le numéro de référence du dossier et le montant forfaitaire sont fixés administrativement. Veuillez renseigner vos coordonnées pour permettre l'émission et l'affectation comptable de votre règlement.
+            Le numéro de référence du dossier et le montant forfaitaire sont fixés administrativement. Veuillez indiquer votre identité pour permettre l'émission et l'affectation comptable de votre règlement.
           </p>
         </NoticeBanner>
 
@@ -100,17 +100,17 @@ export default function InformationPage() {
           </div>
         </div>
 
-        {/* Section 2: Client Identity Details to Fill */}
+        {/* Section 2: Client Identity (Contact phone and email removed everywhere per client request) */}
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
               <User className="w-4 h-4 text-blue-700" />
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                Coordonnées du destinataire / redevable
+                Identité du destinataire / redevable
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="w-full">
               <FormInput
                 id="fullName"
                 name="fullName"
@@ -122,39 +122,7 @@ export default function InformationPage() {
                 error={touched.fullName ? errors.fullName : null}
                 required
                 icon={User}
-                helperText="Nom figurant sur l'avis de contravention."
-              />
-
-              <FormInput
-                id="email"
-                name="email"
-                type="email"
-                label="Adresse e-mail de contact"
-                placeholder="Ex : martine.dupont@exemple.fr"
-                value={formData.email}
-                onChange={(e) => updateFormField('email', e.target.value)}
-                onBlur={() => markTouched('email')}
-                error={touched.email ? errors.email : null}
-                required
-                icon={Mail}
-                helperText="Pour recevoir le récapitulatif du bordereau de virement."
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
-                id="phone"
-                name="phone"
-                type="tel"
-                label="Numéro de téléphone"
-                placeholder="Ex : 06 12 34 56 78"
-                value={formData.phone}
-                onChange={(e) => updateFormField('phone', e.target.value)}
-                onBlur={() => markTouched('phone')}
-                error={touched.phone ? errors.phone : null}
-                required
-                icon={Phone}
-                helperText="Format : 10 chiffres (ex. 06 12 34 56 78) ou indicatif international."
+                helperText="Nom figurant sur l'avis de contravention pour affectation du paiement."
               />
             </div>
           </div>
