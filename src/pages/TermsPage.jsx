@@ -68,7 +68,7 @@ export default function TermsPage() {
             <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
               {organizationConfig.termsAndConditions.section1.title}
             </h2>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
               {organizationConfig.termsAndConditions.section1.body}
             </p>
           </div>
@@ -78,7 +78,7 @@ export default function TermsPage() {
             <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
               {organizationConfig.termsAndConditions.section2.title}
             </h2>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
               {organizationConfig.termsAndConditions.section2.body}
             </p>
           </div>
