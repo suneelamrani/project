@@ -98,9 +98,9 @@ export default function InvoicePage() {
           </div>
         </div>
 
-        {/* 2-Columns: Client Details & Assigned Representative */}
+        {/* 2-Columns: Client Details (Name, Email, Phone) & Assigned Representative */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
-          {/* Recipient / Debtor info (No phone/email per client instruction) */}
+          {/* Recipient / Debtor info filled by client */}
           <div className="space-y-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
               Redevable / Titulaire du dossier
@@ -108,6 +108,16 @@ export default function InvoicePage() {
             <p className="text-base font-bold text-slate-900">
               {formData.fullName || 'Destinataire non renseigné'}
             </p>
+            {formData.email && (
+              <p className="text-xs text-slate-600">
+                E-mail : <span className="text-slate-800 font-medium">{formData.email}</span>
+              </p>
+            )}
+            {formData.phone && (
+              <p className="text-xs text-slate-600">
+                Téléphone : <span className="text-slate-800 font-medium">{formData.phone}</span>
+              </p>
+            )}
             <p className="text-xs text-slate-600">
               Nature de l'amende : <span className="text-slate-800 font-medium">{formData.infractionType}</span>
             </p>

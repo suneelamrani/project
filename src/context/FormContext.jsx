@@ -37,6 +37,8 @@ export function FormProvider({ children }) {
       reference: initialParams.reference,
       amount: initialParams.amount,
       fullName: '',
+      email: '',
+      phone: '',
       emissionDate: getInitialTodayDate(),
       infractionType: organizationConfig.dossier.infractionType,
     };
@@ -90,6 +92,22 @@ export function FormProvider({ children }) {
       }
     }
 
+    if (field === 'email') {
+      if (!value || !value.trim()) {
+        error = 'L’adresse e-mail est obligatoire pour l’envoi de la confirmation.';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+        error = 'Veuillez saisir une adresse e-mail valide (ex. nom@domaine.fr).';
+      }
+    }
+
+    if (field === 'phone') {
+      if (!value || !value.trim()) {
+        error = 'Le numéro de téléphone est obligatoire.';
+      } else if (!/^[0-9\s+().-]{8,20}$/.test(value.trim())) {
+        error = 'Numéro de téléphone invalide (au moins 8 chiffres).';
+      }
+    }
+
     setErrors((prev) => {
       const updated = { ...prev };
       if (error) {
@@ -116,8 +134,28 @@ export function FormProvider({ children }) {
       isValid = false;
     }
 
+    const emailVal = formData.email;
+    if (!emailVal || !emailVal.trim()) {
+      newErrors.email = 'L’adresse e-mail est obligatoire.';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal.trim())) {
+      newErrors.email = 'Veuillez saisir une adresse e-mail valide.';
+      isValid = false;
+    }
+
+    const phoneVal = formData.phone;
+    if (!phoneVal || !phoneVal.trim()) {
+      newErrors.phone = 'Le numéro de téléphone est obligatoire.';
+      isValid = false;
+    } else if (!/^[0-9\s+().-]{8,20}$/.test(phoneVal.trim())) {
+      newErrors.phone = 'Numéro de téléphone invalide.';
+      isValid = false;
+    }
+
     setTouched({
       fullName: true,
+      email: true,
+      phone: true,
     });
     setErrors(newErrors);
 
@@ -136,7 +174,7 @@ export function FormProvider({ children }) {
         setCurrentStep(2);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        showToast('Veuillez renseigner correctement votre nom et prénom.');
+        showToast('Veuillez renseigner correctement les champs obligatoires.');
       }
       return;
     }
@@ -184,6 +222,8 @@ export function FormProvider({ children }) {
       reference: initialParams.reference,
       amount: initialParams.amount,
       fullName: '',
+      email: '',
+      phone: '',
       emissionDate: getInitialTodayDate(),
       infractionType: organizationConfig.dossier.infractionType,
     });
