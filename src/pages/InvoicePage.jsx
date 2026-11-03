@@ -65,8 +65,8 @@ export default function InvoicePage() {
         {/* Document Header: Client Logo LEFT, Shield & Title RIGHT */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 border-b-2 border-slate-900 pb-8">
           <div>
-            {/* Client Logo on Left Side */}
-            <ClientLogo className="h-10 sm:h-12 w-auto mb-3" />
+            {/* Client Logo on Left Side (Larger presentation) */}
+            <ClientLogo className="h-14 sm:h-20 w-auto mb-3" />
             <div className="text-xs text-slate-600 space-y-0.5 mt-2">
               <p className="font-bold text-slate-900">{organizationConfig.legalName}</p>
               <p>{organizationConfig.entityType} • SIRET : {organizationConfig.siret}</p>
