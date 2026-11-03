@@ -1,4 +1,4 @@
-import { ArrowRight, Hash, User, Mail, Phone, Euro, Calendar, HelpCircle, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Hash, User, Mail, Phone, HelpCircle, ShieldAlert, Lock } from 'lucide-react';
 import { useFormContext } from '../context/FormContext';
 import FormInput from '../components/FormInput';
 import NoticeBanner from '../components/NoticeBanner';
@@ -26,81 +26,87 @@ export default function InformationPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/30">
             <span>Étape 1 sur 3</span>
             <span>•</span>
-            <span>Identification du Dossier</span>
+            <span>Identification du Redevable</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
             Règlement de votre dossier d'amende
           </h1>
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Ce portail vous permet d'obtenir les coordonnées bancaires officielles et le bordereau de virement SEPA pour le règlement de votre amende en toute conformité.
+            Consultez les détails de votre dossier ci-dessous et complétez vos coordonnées afin d'accéder au bordereau officiel de virement bancaire SEPA.
           </p>
         </div>
       </div>
 
       {/* Main Form Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
         {/* Security & Instruction Alert */}
-        <NoticeBanner type="info" title="Instructions préalables au règlement" className="mb-6">
+        <NoticeBanner type="info" title="Informations officielles du dossier">
           <p>
-            Veuillez renseigner le <strong>numéro de référence exact de votre dossier</strong> tel qu’il figure sur votre avis ou notification. Cette référence sera obligatoirement reportée dans le motif de votre virement bancaire pour garantir l’affectation immédiate des fonds.
+            Le numéro de référence du dossier et le montant forfaitaire sont fixés administrativement. Veuillez renseigner vos coordonnées pour permettre l'émission et l'affectation comptable de votre règlement.
           </p>
         </NoticeBanner>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-6">
-          {/* Section: Dossier Reference */}
-          <div className="bg-slate-50/80 rounded-xl p-5 border border-slate-200/90 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2">
-                <Hash className="w-5 h-5 text-blue-700" />
-                <h2 className="text-base font-bold text-slate-900">
-                  Référence du dossier d'amende
-                </h2>
-              </div>
-              <span className="text-xs font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md border border-rose-200">
-                Champ obligatoire
-              </span>
+        {/* Section 1: Official Folder Reference & Price (Decided by Administrator / Read-Only for Client) */}
+        <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="flex items-center gap-2">
+              <Hash className="w-5 h-5 text-blue-700" />
+              <h2 className="text-base font-bold text-slate-900">
+                Paramètres officiels du dossier d'amende
+              </h2>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
-                id="reference"
-                name="reference"
-                label="Numéro de référence du dossier"
-                placeholder="Ex : DOS-2026-78492"
-                value={formData.reference}
-                onChange={(e) => updateFormField('reference', e.target.value.toUpperCase())}
-                onBlur={() => markTouched('reference')}
-                error={touched.reference ? errors.reference : null}
-                required
-                icon={Hash}
-                helperText="Indiquez la référence complète figurant sur votre document d'avis."
-                badge="Reporté sur le virement"
-              />
-
-              <FormInput
-                id="amount"
-                name="amount"
-                label="Montant de l'amende à régler"
-                type="text"
-                placeholder="135.00"
-                value={formData.amount}
-                onChange={(e) => updateFormField('amount', e.target.value)}
-                onBlur={() => markTouched('amount')}
-                error={touched.amount ? errors.amount : null}
-                required
-                icon={Euro}
-                helperText="Montant forfaitaire réglementaire en euros (€)."
-                badge="Devise : EUR"
-              />
-            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200">
+              <Lock className="w-3.5 h-3.5 text-slate-500" />
+              <span>Fixé par l'administration</span>
+            </span>
           </div>
 
-          {/* Section: Client Identity */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Read-Only Folder Reference Card */}
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
+              <span className="text-xs font-semibold text-slate-500 block">
+                Numéro de référence du dossier
+              </span>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-lg sm:text-xl font-black text-blue-950 tracking-wider">
+                  {formData.reference}
+                </span>
+                <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                  Dossier Attribué
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Référence officielle obligatoire pour le virement SEPA.
+              </p>
+            </div>
+
+            {/* Read-Only Amount Card */}
+            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
+              <span className="text-xs font-semibold text-slate-500 block">
+                Montant réglementaire forfaitaire
+              </span>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-lg sm:text-xl font-black text-slate-900">
+                  {formData.amount} € EUR
+                </span>
+                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  Tarif Réglementaire
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Montant total net sans frais supplémentaires.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Client Identity Details to Fill */}
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
               <User className="w-4 h-4 text-blue-700" />
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                Identité du destinataire / redevable
+                Coordonnées du destinataire / redevable
               </h2>
             </div>
 
@@ -140,24 +146,15 @@ export default function InformationPage() {
                 id="phone"
                 name="phone"
                 type="tel"
-                label="Numéro de téléphone (optionnel)"
+                label="Numéro de téléphone"
                 placeholder="Ex : 06 12 34 56 78"
                 value={formData.phone}
                 onChange={(e) => updateFormField('phone', e.target.value)}
                 onBlur={() => markTouched('phone')}
                 error={touched.phone ? errors.phone : null}
+                required
                 icon={Phone}
-                helperText="Utilisé uniquement en cas de besoin de suivi du dossier."
-              />
-
-              <FormInput
-                id="date"
-                name="date"
-                label="Date de la démarche"
-                value={formData.date}
-                readOnly
-                icon={Calendar}
-                helperText="Date d'émission de l'ordre d'instructions."
+                helperText="Format : 10 chiffres (ex. 06 12 34 56 78) ou indicatif international."
               />
             </div>
           </div>

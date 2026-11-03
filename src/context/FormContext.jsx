@@ -3,7 +3,6 @@ import { organizationConfig } from '../config/organization';
 
 const FormContext = createContext(null);
 
-// Pure helper function for initial date
 function getInitialTodayDate() {
   const today = new Date();
   return today.toLocaleDateString('fr-FR', {
@@ -13,25 +12,43 @@ function getInitialTodayDate() {
   });
 }
 
+function getInitialDossierParams() {
+  if (typeof window !== 'undefined' && window.location) {
+    const params = new URLSearchParams(window.location.search);
+    const refParam = params.get('ref') || params.get('reference');
+    const amountParam = params.get('amount') || params.get('montant');
+    return {
+      reference: refParam || organizationConfig.dossier.reference,
+      amount: amountParam || organizationConfig.dossier.amount,
+    };
+  }
+  return {
+    reference: organizationConfig.dossier.reference,
+    amount: organizationConfig.dossier.amount,
+  };
+}
+
 export function FormProvider({ children }) {
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState(() => ({
-    reference: 'DOS-2026-78492',
-    fullName: '',
-    email: '',
-    phone: '',
-    amount: organizationConfig.defaults.amount,
-    date: getInitialTodayDate(),
-    infractionType: 'Amende forfaitaire de stationnement',
-  }));
+  const [formData, setFormData] = useState(() => {
+    const initialParams = getInitialDossierParams();
+    return {
+      reference: initialParams.reference,
+      amount: initialParams.amount,
+      fullName: '',
+      email: '',
+      phone: '',
+      emissionDate: getInitialTodayDate(),
+      infractionType: organizationConfig.dossier.infractionType,
+    };
+  });
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Auto-hide toast notification
   useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
@@ -50,7 +67,6 @@ export function FormProvider({ children }) {
       ...prev,
       [field]: value,
     }));
-    // Clear error for this field as user types
     if (errors[field]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -68,16 +84,6 @@ export function FormProvider({ children }) {
   const validateField = (field, value) => {
     let error = null;
 
-    if (field === 'reference') {
-      if (!value || !value.trim()) {
-        error = 'Le numéro de référence du dossier est obligatoire.';
-      } else if (value.trim().length < 4) {
-        error = 'La référence doit comporter au moins 4 caractères.';
-      } else if (!/^[A-Za-z0-9\-_./]+$/.test(value.trim())) {
-        error = 'Format de référence invalide (caractères autorisés : lettres, chiffres, tirets).';
-      }
-    }
-
     if (field === 'fullName') {
       if (!value || !value.trim()) {
         error = 'Le nom et prénom sont obligatoires.';
@@ -94,16 +100,11 @@ export function FormProvider({ children }) {
       }
     }
 
-    if (field === 'phone' && value && value.trim()) {
-      if (!/^[0-9\s+().-]{8,20}$/.test(value.trim())) {
-        error = 'Numéro de téléphone invalide.';
-      }
-    }
-
-    if (field === 'amount') {
-      const numeric = parseFloat(value);
-      if (isNaN(numeric) || numeric <= 0) {
-        error = 'Le montant doit être un nombre positif valide.';
+    if (field === 'phone') {
+      if (!value || !value.trim()) {
+        error = 'Le numéro de téléphone est obligatoire.';
+      } else if (!/^[0-9\s+().-]{8,20}$/.test(value.trim())) {
+        error = 'Numéro de téléphone invalide (au moins 8 chiffres).';
       }
     }
 
@@ -121,25 +122,12 @@ export function FormProvider({ children }) {
   };
 
   const validateStep1 = () => {
-    const fieldsToValidate = ['reference', 'fullName', 'email'];
+    const fieldsToValidate = ['fullName', 'email', 'phone'];
     let isValid = true;
     const newErrors = {};
 
     fieldsToValidate.forEach((field) => {
       const val = formData[field];
-      if (field === 'reference') {
-        if (!val || !val.trim()) {
-          newErrors.reference = 'Le numéro de référence du dossier est obligatoire.';
-          isValid = false;
-        } else if (val.trim().length < 4) {
-          newErrors.reference = 'La référence doit comporter au moins 4 caractères.';
-          isValid = false;
-        } else if (!/^[A-Za-z0-9\-_./]+$/.test(val.trim())) {
-          newErrors.reference = 'Format de référence invalide (caractères autorisés : lettres, chiffres, tirets).';
-          isValid = false;
-        }
-      }
-
       if (field === 'fullName') {
         if (!val || !val.trim()) {
           newErrors.fullName = 'Le nom et prénom sont obligatoires.';
@@ -159,10 +147,19 @@ export function FormProvider({ children }) {
           isValid = false;
         }
       }
+
+      if (field === 'phone') {
+        if (!val || !val.trim()) {
+          newErrors.phone = 'Le numéro de téléphone est obligatoire.';
+          isValid = false;
+        } else if (!/^[0-9\s+().-]{8,20}$/.test(val.trim())) {
+          newErrors.phone = 'Numéro de téléphone invalide.';
+          isValid = false;
+        }
+      }
     });
 
     setTouched({
-      reference: true,
       fullName: true,
       email: true,
       phone: true,
@@ -227,14 +224,15 @@ export function FormProvider({ children }) {
   };
 
   const resetForm = () => {
+    const initialParams = getInitialDossierParams();
     setFormData({
-      reference: '',
+      reference: initialParams.reference,
+      amount: initialParams.amount,
       fullName: '',
       email: '',
       phone: '',
-      amount: organizationConfig.defaults.amount,
-      date: getInitialTodayDate(),
-      infractionType: 'Amende forfaitaire de stationnement',
+      emissionDate: getInitialTodayDate(),
+      infractionType: organizationConfig.dossier.infractionType,
     });
     setTermsAccepted(false);
     setErrors({});

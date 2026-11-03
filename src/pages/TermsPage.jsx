@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowLeft, FileText, AlertCircle, Bookmark } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Bookmark, AlertCircle } from 'lucide-react';
 import { useFormContext } from '../context/FormContext';
 import { organizationConfig } from '../config/organization';
 
@@ -32,17 +32,17 @@ export default function TermsPage() {
             Conditions générales de règlement
           </h1>
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Veuillez lire attentivement les dispositions relatives au règlement par virement bancaire ci-dessous avant d'accéder aux coordonnées de virement.
+            Veuillez lire attentivement les dispositions réglementaires relatives au virement bancaire ci-dessous.
           </p>
         </div>
       </div>
 
-      {/* Main Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
-        {/* Recapitulative dossier pill */}
+      {/* Main Administrative Document Container */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 space-y-6">
+        {/* Dossier Reference Pill */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
           <div className="flex items-center gap-2">
-            <Bookmark className="w-4 h-4 text-blue-700" />
+            <Bookmark className="w-4 h-4 text-slate-700" />
             <span className="text-slate-600">Dossier en cours :</span>
             <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
               {formData.reference || 'DOSSIER-NON-DEFINI'}
@@ -58,64 +58,38 @@ export default function TermsPage() {
           </div>
         </div>
 
-        {/* Professional Document Style Presentation */}
-        <div className="relative border-2 border-slate-200/90 rounded-2xl p-5 sm:p-8 bg-gradient-to-b from-slate-50/50 via-white to-slate-50/30 shadow-xs">
-          {/* Document Top Bar */}
-          <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-base font-bold text-slate-900">
-                  Protocole de Règlement par Virement
-                </h2>
-                <p className="text-xs text-slate-500">
-                  {organizationConfig.legalName} • Document officiel de référence
-                </p>
-              </div>
-            </div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 hidden sm:inline-block">
-              Texte Intégral
-            </span>
+        {/* ======================================================== */}
+        {/* OFFICIAL ADMINISTRATIVE DOCUMENT FORMATTING              */}
+        {/* (Clean legal document structure, no blog quote cards)    */}
+        {/* ======================================================== */}
+        <div className="bg-white border border-slate-300 rounded-xl p-6 sm:p-10 shadow-2xs divide-y divide-slate-200">
+          {/* Article 1 */}
+          <div className="pb-6 space-y-3">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+              {organizationConfig.termsAndConditions.section1.title}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
+              {organizationConfig.termsAndConditions.section1.body}
+            </p>
           </div>
 
-          {/* Clauses / Exact French Content */}
-          <div className="space-y-6 text-sm text-slate-700 leading-relaxed">
-            {/* Clause 1 */}
-            <article className="space-y-2 p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-md bg-blue-50 text-blue-700 text-xs font-extrabold flex items-center justify-center border border-blue-200">
-                  1
-                </span>
-                {organizationConfig.termsAndConditions.section1.title}
-              </h3>
-              <p className="text-slate-700 sm:text-justify italic bg-slate-50/60 p-3.5 rounded-lg border-l-4 border-blue-700 font-serif text-sm sm:text-base leading-relaxed">
-                {organizationConfig.termsAndConditions.section1.body}
-              </p>
-            </article>
-
-            {/* Clause 2 */}
-            <article className="space-y-2 p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-md bg-blue-50 text-blue-700 text-xs font-extrabold flex items-center justify-center border border-blue-200">
-                  2
-                </span>
-                {organizationConfig.termsAndConditions.section2.title}
-              </h3>
-              <p className="text-slate-700 sm:text-justify italic bg-slate-50/60 p-3.5 rounded-lg border-l-4 border-blue-700 font-serif text-sm sm:text-base leading-relaxed">
-                {organizationConfig.termsAndConditions.section2.body}
-              </p>
-            </article>
+          {/* Article 2 */}
+          <div className="pt-6 pb-6 space-y-3">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+              {organizationConfig.termsAndConditions.section2.title}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
+              {organizationConfig.termsAndConditions.section2.body}
+            </p>
           </div>
 
-          {/* Mandatory Checkbox Agreement */}
-          <div className="mt-8 pt-6 border-t border-slate-200">
+          {/* Mandatory Checkbox Agreement - Administrative Format */}
+          <div className="pt-6">
             <div
               className={`p-4 sm:p-5 rounded-xl border-2 transition-all ${
                 termsAccepted
-                  ? 'border-emerald-500 bg-emerald-50/40'
-                  : 'border-slate-300 bg-slate-50/70 hover:border-slate-400'
+                  ? 'border-emerald-600 bg-emerald-50/30'
+                  : 'border-slate-300 bg-slate-50/60 hover:border-slate-400'
               }`}
             >
               <label
@@ -132,27 +106,26 @@ export default function TermsPage() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-sm font-bold text-slate-900 block">
+                  <span className="text-sm sm:text-base font-bold text-slate-900 block">
                     {organizationConfig.termsAndConditions.mandatoryCheckboxLabel}
                   </span>
-                  <span className="text-xs text-slate-500 block">
-                    En cochant cette case, vous certifiez l'exactitude des informations renseignées et vous vous engagez à reporter scrupuleusement la référence de votre dossier lors de l'émission de votre virement bancaire.
+                  <span className="text-xs text-slate-600 block leading-relaxed">
+                    Je reconnais avoir pris connaissance des modalités ci-dessus et je m'engage à indiquer fidèlement le numéro de dossier dans l'ordre de virement bancaire.
                   </span>
                 </div>
               </label>
             </div>
 
-            {/* Validation warning if un-checked */}
             {!termsAccepted && (
               <p className="flex items-center gap-1.5 text-xs text-slate-500 mt-2.5">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                <span>L'acceptation de ces conditions est requise pour débloquer l'accès aux coordonnées bancaires.</span>
+                <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                <span>La confirmation d'acceptation est requise pour débloquer l'accès aux coordonnées de virement.</span>
               </p>
             )}
           </div>
         </div>
 
-        {/* Local validation disclaimer */}
+        {/* Administrative notice */}
         <p className="text-[11px] text-slate-500 text-center italic">
           {organizationConfig.disclaimers.localConsentNote}
         </p>

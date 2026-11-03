@@ -6,6 +6,8 @@
  * are hardcoded across multiple components.
  */
 
+const REPRESENTATIVE_NAME = "M. Jean-Marc Delorme";
+
 export const organizationConfig = {
   // Legal Organization Identity
   legalName: "SERVICE DE RECOUVREMENT & GESTION DES DOSSIERS",
@@ -16,21 +18,28 @@ export const organizationConfig = {
   
   // Designated Representative
   designatedRepresentative: {
-    fullName: "M. Jean-Marc Delorme",
+    fullName: REPRESENTATIVE_NAME,
     title: "Responsable du Service de Règlement et Recouvrement",
     department: "Direction des Services Financiers",
   },
 
   // Banking Details for Transfer (SEPA)
   bankDetails: {
-    bankName: "Banque Européenne de Recouvrement - Agence Centrale Paris",
+    // Beneficiary MUST match Designated Representative name ("SAME NAME" requirement)
+    accountHolder: REPRESENTATIVE_NAME,
     iban: "FR76 3000 4012 3400 0123 4567 890",
     ibanFormatted: "FR76 3000 4012 3400 0123 4567 890",
-    bicSwift: "BERCFRPPXXX",
-    accountHolder: "SERVICE RECOUVREMENT DOSSIERS SEPA",
     paymentType: "Virement bancaire SEPA",
     settlementDelay: "24 à 48 heures ouvrées",
     currency: "EUR (€)",
+  },
+
+  // Official Dossier Details decided by administrator (not editable by client)
+  dossier: {
+    reference: "DOS-2026-78492",
+    amount: "135.00",
+    currency: "€",
+    infractionType: "Amende forfaitaire de stationnement",
   },
 
   // Contact Information
@@ -43,13 +52,6 @@ export const organizationConfig = {
     phone: "+33 (0)1 89 20 45 00",
     email: "contact-reglement@service-recouvrement.fr",
     supportHours: "Du lundi au vendredi de 8h30 à 18h00 (CET)",
-  },
-
-  // Default dossier details
-  defaults: {
-    amount: "135.00",
-    currency: "€",
-    defaultReferencePrefix: "DOS-",
   },
 
   // Official texts for Terms & Payment Instructions
@@ -74,9 +76,8 @@ export const organizationConfig = {
 
   // Disclaimer notices
   disclaimers: {
-    localConsentNote: "Validation locale de l'accord préalable à l'affichage des coordonnées bancaires officielles.",
-    invoiceDisclaimer: "Le présent document récapitule les coordonnées bancaires officielles et vérifiées de l'organisme bénéficiaire pour l'exécution d'un virement SEPA. Aucun prélèvement automatique ni débit direct de carte bancaire n'est opéré par ce formulaire.",
+    localConsentNote: "Validation préalable requise avant l'affichage des coordonnées bancaires officielles.",
+    invoiceDisclaimer: "Le présent document récapitule les coordonnées bancaires officielles et vérifiées du bénéficiaire pour l'exécution d'un virement SEPA. Aucun prélèvement automatique ni débit direct de carte bancaire n'est opéré par ce formulaire.",
     securityNotice: "Plateforme d'instructions de virement sécurisée par protocole TLS 256-bit.",
   },
 };
-

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Printer, ArrowLeft, Landmark, Hash, User, ShieldCheck, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useFormContext } from '../context/FormContext';
 import CopyButton from '../components/CopyButton';
+import ClientLogo from '../components/ClientLogo';
 import OrganizationLogo from '../components/OrganizationLogo';
 import { organizationConfig } from '../config/organization';
 
@@ -16,6 +17,9 @@ export default function InvoicePage() {
     const cleanRef = (formData.reference || '0001').replace(/[^A-Za-z0-9]/g, '');
     return `BOR-${cleanRef}`;
   }, [formData.reference]);
+
+  // Beneficiary and Representative are strictly the SAME NAME per client requirement
+  const beneficiaryName = organizationConfig.designatedRepresentative.fullName;
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -58,10 +62,11 @@ export default function InvoicePage() {
         id="invoice-document"
         className="bg-white rounded-2xl border-2 border-slate-300 shadow-md p-6 sm:p-10 md:p-12 space-y-8 print:shadow-none print:border print:border-slate-400 print:p-6 print:rounded-none"
       >
-        {/* Document Header */}
+        {/* Document Header: Client Logo LEFT, Shield & Title RIGHT */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 border-b-2 border-slate-900 pb-8">
           <div>
-            <OrganizationLogo className="mb-3" />
+            {/* Client Logo on Left Side */}
+            <ClientLogo className="h-10 sm:h-12 w-auto mb-3" />
             <div className="text-xs text-slate-600 space-y-0.5 mt-2">
               <p className="font-bold text-slate-900">{organizationConfig.legalName}</p>
               <p>{organizationConfig.entityType} • SIRET : {organizationConfig.siret}</p>
@@ -71,9 +76,12 @@ export default function InvoicePage() {
           </div>
 
           <div className="flex flex-col md:items-end text-left md:text-right">
-            <span className="inline-block px-3 py-1 bg-slate-900 text-white text-xs font-mono font-bold uppercase tracking-widest rounded-md mb-2">
-              DOCUMENT OFFICIEL DE RÈGLEMENT
-            </span>
+            <div className="flex items-center gap-3 mb-2 md:justify-end">
+              <span className="inline-block px-3 py-1 bg-slate-900 text-white text-xs font-mono font-bold uppercase tracking-widest rounded-md">
+                DOCUMENT OFFICIEL DE RÈGLEMENT
+              </span>
+              <OrganizationLogo compact={true} />
+            </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
               BORDEREAU D'INSTRUCTIONS SEPA
             </h1>
@@ -81,7 +89,7 @@ export default function InvoicePage() {
               N° d'émission : <span className="font-bold text-slate-800">{invoiceNumber}</span>
             </p>
             <p className="text-xs text-slate-500">
-              Date d'émission : <span className="font-semibold text-slate-800">{formData.date}</span>
+              Date d'émission : <span className="font-semibold text-slate-800">{formData.emissionDate}</span>
             </p>
             <p className="text-xs text-slate-500">
               Mode de paiement : <span className="font-bold text-blue-900">{organizationConfig.bankDetails.paymentType}</span>
@@ -114,7 +122,7 @@ export default function InvoicePage() {
             </p>
           </div>
 
-          {/* Responsible Authority Info */}
+          {/* Responsible Authority Info (Representative Name) */}
           <div className="space-y-1.5 md:border-l md:border-slate-200 md:pl-6">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
               Service Émetteur & Responsable Désigné
@@ -190,8 +198,9 @@ export default function InvoicePage() {
 
         {/* ======================================================== */}
         {/* SECTION 2: VERIFIED ORGANIZATIONAL BANK DETAILS          */}
+        {/* (Cleaned per client request: SAME NAME, Bank & BIC removed) */}
         {/* ======================================================== */}
-        <div className="rounded-2xl border border-slate-300 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-slate-300 bg-white p-5 sm:p-6 shadow-xs space-y-5">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
             <Landmark className="w-5 h-5 text-slate-800" />
             <h2 className="text-base font-bold text-slate-900 uppercase tracking-wider">
@@ -199,30 +208,16 @@ export default function InvoicePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Beneficiary Name */}
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-xs font-semibold text-slate-500 block">
-                Bénéficiaire du virement (Titulaire du compte)
+          {/* Beneficiary Name (SAME NAME as Designated Representative) */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-xs font-semibold text-slate-500 block">
+              Bénéficiaire du virement (Titulaire du compte)
+            </span>
+            <div className="flex items-center justify-between gap-2 mt-1.5">
+              <span className="text-base sm:text-lg font-bold text-slate-900">
+                {beneficiaryName}
               </span>
-              <div className="flex items-center justify-between gap-2 mt-1">
-                <span className="text-sm font-bold text-slate-900">
-                  {organizationConfig.bankDetails.accountHolder}
-                </span>
-                <CopyButton text={organizationConfig.bankDetails.accountHolder} fieldName="Nom du bénéficiaire" />
-              </div>
-            </div>
-
-            {/* Bank Name */}
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-xs font-semibold text-slate-500 block">
-                Établissement bancaire teneur de compte
-              </span>
-              <div className="flex items-center justify-between gap-2 mt-1">
-                <span className="text-sm font-bold text-slate-900">
-                  {organizationConfig.bankDetails.bankName}
-                </span>
-              </div>
+              <CopyButton text={beneficiaryName} fieldName="Nom du bénéficiaire" />
             </div>
           </div>
 
@@ -250,32 +245,17 @@ export default function InvoicePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* BIC / SWIFT */}
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
-              <div>
-                <span className="text-xs font-semibold text-slate-500 block">
-                  Code BIC / SWIFT
-                </span>
-                <span className="font-mono text-sm font-bold text-slate-900 mt-1 block">
-                  {organizationConfig.bankDetails.bicSwift}
-                </span>
-              </div>
-              <CopyButton text={organizationConfig.bankDetails.bicSwift} fieldName="Code BIC" />
+          {/* Amount to settle */}
+          <div className="p-4 bg-blue-50/70 rounded-xl border border-blue-200 flex items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-semibold text-blue-900 block">
+                Montant exact du virement
+              </span>
+              <span className="font-mono text-lg font-black text-blue-950 mt-1 block">
+                {formData.amount} € EUR
+              </span>
             </div>
-
-            {/* Total Amount to settle */}
-            <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-200 flex items-center justify-between gap-2">
-              <div>
-                <span className="text-xs font-semibold text-blue-900 block">
-                  Montant exact du virement
-                </span>
-                <span className="font-mono text-base font-black text-blue-950 mt-1 block">
-                  {formData.amount} € EUR
-                </span>
-              </div>
-              <CopyButton text={formData.amount} fieldName="Montant" label="Copier montant" />
-            </div>
+            <CopyButton text={formData.amount} fieldName="Montant" label="Copier montant" />
           </div>
         </div>
 
@@ -302,7 +282,7 @@ export default function InvoicePage() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-slate-600">
-                    Virement SEPA • Compte {organizationConfig.bankDetails.iban.slice(0, 8)}...
+                    Virement SEPA • Bénéficiaire : {beneficiaryName}
                   </td>
                   <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
                     {formData.amount} €
@@ -332,7 +312,7 @@ export default function InvoicePage() {
               Connectez-vous à votre espace bancaire habituel (application mobile ou site web).
             </li>
             <li>
-              Ajoutez un nouveau bénéficiaire en saisissant l'IBAN officiel : <code className="bg-white px-1.5 py-0.5 rounded border border-slate-300 font-bold text-slate-800">{organizationConfig.bankDetails.ibanFormatted}</code>.
+              Ajoutez le bénéficiaire <strong>{beneficiaryName}</strong> avec l'IBAN officiel : <code className="bg-white px-1.5 py-0.5 rounded border border-slate-300 font-bold text-slate-800">{organizationConfig.bankDetails.ibanFormatted}</code>.
             </li>
             <li>
               Dans le champ <strong>« Référence du virement »</strong> ou <strong>« Motif »</strong>, renseignez impérativement : <code className="bg-white px-1.5 py-0.5 rounded border border-slate-300 font-bold text-blue-900">{formData.reference}</code>.

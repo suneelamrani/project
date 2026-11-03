@@ -4,7 +4,7 @@ import App from './App';
 import { organizationConfig } from './config/organization';
 
 describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
-  it('Step 1: renders client information page and validates required fields', () => {
+  it('Step 1: displays administratively decided folder number and price, and validates client fields', () => {
     render(<App />);
 
     // Check organization branding & header
@@ -12,35 +12,30 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
     expect(screen.getByText(/Étape 1 sur 3/i)).toBeInTheDocument();
     expect(screen.getByText(/Règlement de votre dossier d'amende/i)).toBeInTheDocument();
 
-    // Check folder reference input
-    const refInput = screen.getByLabelText(/Numéro de référence du dossier/i);
-    expect(refInput).toBeInTheDocument();
+    // Folder reference and amount are decided by administration (not open editable input for client)
+    expect(screen.getByText(organizationConfig.dossier.reference)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${organizationConfig.dossier.amount} €`, 'i'))).toBeInTheDocument();
+    expect(screen.getByText(/Fixé par l'administration/i)).toBeInTheDocument();
 
-    // Check Name and Email inputs
+    // Check Name, Email, and Phone inputs
     const nameInput = screen.getByLabelText(/Nom et Prénom/i);
     const emailInput = screen.getByLabelText(/Adresse e-mail de contact/i);
+    const phoneInput = screen.getByLabelText(/Numéro de téléphone/i);
     expect(nameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
+    expect(phoneInput).toBeInTheDocument();
 
-    // Try to continue with empty name and email
+    // Check that Date de la démarche input is deleted per client request
+    expect(screen.queryByLabelText(/Date de la démarche/i)).toBeNull();
+
+    // Try to continue with empty fields
     const continueBtn = screen.getByRole('button', { name: /Continuer vers les conditions/i });
     fireEvent.click(continueBtn);
 
     // Validation messages should appear
     expect(screen.getByText(/Le nom et prénom sont obligatoires/i)).toBeInTheDocument();
     expect(screen.getByText(/L’adresse e-mail est obligatoire/i)).toBeInTheDocument();
-  });
-
-  it('Step 1: validates format of folder reference', () => {
-    render(<App />);
-
-    const refInput = screen.getByLabelText(/Numéro de référence du dossier/i);
-    fireEvent.change(refInput, { target: { value: 'AB' } }); // too short
-
-    const continueBtn = screen.getByRole('button', { name: /Continuer vers les conditions/i });
-    fireEvent.click(continueBtn);
-
-    expect(screen.getByText(/La référence doit comporter au moins 4 caractères/i)).toBeInTheDocument();
+    expect(screen.getByText(/Le numéro de téléphone est obligatoire/i)).toBeInTheDocument();
   });
 
   it('Step Indicator: prevents skipping forward to Step 2 or Step 3 when requirements not met', () => {
@@ -60,14 +55,13 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
   it('Step 1 to Step 2: fills required client info and navigates to Step 2', () => {
     render(<App />);
 
-    const refInput = screen.getByLabelText(/Numéro de référence du dossier/i);
     const nameInput = screen.getByLabelText(/Nom et Prénom/i);
     const emailInput = screen.getByLabelText(/Adresse e-mail de contact/i);
+    const phoneInput = screen.getByLabelText(/Numéro de téléphone/i);
 
-    // Clear and enter custom reference
-    fireEvent.change(refInput, { target: { value: 'DOS-2026-TEST99' } });
     fireEvent.change(nameInput, { target: { value: 'Jean Dupont' } });
     fireEvent.change(emailInput, { target: { value: 'jean.dupont@test.fr' } });
+    fireEvent.change(phoneInput, { target: { value: '06 12 34 56 78' } });
 
     const continueBtn = screen.getByRole('button', { name: /Continuer vers les conditions/i });
     fireEvent.click(continueBtn);
@@ -77,12 +71,13 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
     expect(screen.getByText(/Conditions générales de règlement/i)).toBeInTheDocument();
   });
 
-  it('Step 2: displays exact French text and enforces mandatory checkbox before proceeding', () => {
+  it('Step 2: displays exact French text with Administrative Document Formatting and enforces mandatory checkbox', () => {
     render(<App />);
 
     // Fill Step 1
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Jean Dupont' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'jean@dupont.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
 
     // Verify exact French text for Section 1
@@ -101,6 +96,9 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
       screen.getByText(new RegExp("En procédant au règlement, je reconnais avoir pris connaissance des modalités de paiement", 'i'))
     ).toBeInTheDocument();
 
+    // Verify deleted blog-like header is NOT present
+    expect(screen.queryByText(/Protocole de Règlement par Virement/i)).toBeNull();
+
     // Verify mandatory checkbox
     const checkbox = screen.getByLabelText(/J'ai lu et j'accepte les conditions générales/i);
     expect(checkbox).not.toBeChecked();
@@ -117,11 +115,9 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
   it('Backward navigation: navigates backward to Step 1 and preserves entered data', () => {
     render(<App />);
 
-    // Custom reference
-    const refInput = screen.getByLabelText(/Numéro de référence du dossier/i);
-    fireEvent.change(refInput, { target: { value: 'DOS-PERSIST-123' } });
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Marie Curie' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'marie@curie.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 99 88 77 66' } });
 
     // Go to step 2
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
@@ -133,19 +129,17 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
 
     // Verify we are back on Step 1 and data is preserved
     expect(screen.getByText(/Étape 1 sur 3/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Numéro de référence du dossier/i)).toHaveValue('DOS-PERSIST-123');
     expect(screen.getByLabelText(/Nom et Prénom/i)).toHaveValue('Marie Curie');
     expect(screen.getByLabelText(/Adresse e-mail de contact/i)).toHaveValue('marie@curie.fr');
+    expect(screen.getByLabelText(/Numéro de téléphone/i)).toHaveValue('06 99 88 77 66');
   });
 
-  it('Step 3: renders invoice-style layout with exact French attention text, verified IBAN, and folder reference', () => {
+  it('Step 3: renders invoice layout with SAME NAME for representative and beneficiary, verified IBAN, and removed BIC/Bank boxes', () => {
     render(<App />);
 
-    // Fill Step 1 with a unique folder reference
-    const refInput = screen.getByLabelText(/Numéro de référence du dossier/i);
-    fireEvent.change(refInput, { target: { value: 'DOS-FINAL-77889' } });
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Albert Camus' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'albert@camus.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 11 22 33 44' } });
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
 
     // Accept terms on Step 2
@@ -157,15 +151,21 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
     expect(screen.getByText(/BORDEREAU D'INSTRUCTIONS SEPA/i)).toBeInTheDocument();
     expect(screen.getByText(/DOCUMENT OFFICIEL DE RÈGLEMENT/i)).toBeInTheDocument();
 
-    // Verify folder reference is displayed and prominent
-    expect(screen.getAllByText('DOS-FINAL-77889').length).toBeGreaterThan(0);
+    // Verify folder reference from config is displayed and prominent
+    expect(screen.getAllByText(organizationConfig.dossier.reference).length).toBeGreaterThan(0);
     expect(screen.getByText('Albert Camus')).toBeInTheDocument();
 
-    // Verify verified IBAN and Bank details from config
+    // Verify verified IBAN
     expect(screen.getAllByText(organizationConfig.bankDetails.ibanFormatted).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(organizationConfig.bankDetails.bicSwift)).toBeInTheDocument();
-    expect(screen.getByText(organizationConfig.bankDetails.bankName)).toBeInTheDocument();
-    expect(screen.getAllByText(organizationConfig.designatedRepresentative.fullName).length).toBeGreaterThanOrEqual(1);
+
+    // Verify SAME NAME requirement: Designated Representative and Beneficiary must both be M. Jean-Marc Delorme
+    const repName = organizationConfig.designatedRepresentative.fullName;
+    const repMatches = screen.getAllByText(repName);
+    expect(repMatches.length).toBeGreaterThanOrEqual(2);
+
+    // Verify that BIC / SWIFT box and Bank name box are DELETED per client request (Image 3)
+    expect(screen.queryByText(/Code BIC \/ SWIFT/i)).toBeNull();
+    expect(screen.queryByText(/Établissement bancaire teneur de compte/i)).toBeNull();
 
     // Verify exact French Attention warning
     expect(screen.getByText(/Attention :/i)).toBeInTheDocument();
@@ -187,6 +187,7 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
 
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Paul Verlaine' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'paul@verlaine.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
 
     fireEvent.click(screen.getByLabelText(/J'ai lu et j'accepte les conditions générales/i));
@@ -204,6 +205,7 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
 
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Paul Verlaine' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'paul@verlaine.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
 
     fireEvent.click(screen.getByLabelText(/J'ai lu et j'accepte les conditions générales/i));
@@ -229,6 +231,7 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
     // Move to Step 2
     fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Test User' } });
     fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'test@user.fr' } });
+    fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
     fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
 
     expect(document.querySelector('input[name="cardNumber"]')).toBeNull();
