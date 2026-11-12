@@ -6,7 +6,7 @@ import clientLogoImg from '../assets/logo-website.png';
  */
 export default function ClientLogo({ className = 'h-14 sm:h-20 w-auto', containerClassName = '' }) {
   return (
-    <div className={`inline-flex items-center justify-center bg-white p-2 sm:p-3 rounded-xl border border-slate-200/80 shadow-xs ${containerClassName}`}>
+    <div className={`inline-flex items-center justify-center ${containerClassName}`}>
       <img
         src={clientLogoImg}
         alt="Logo Officiel de l'Organisme"

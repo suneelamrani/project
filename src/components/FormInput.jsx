@@ -33,13 +33,13 @@ export default function FormInput({
           {required && <span className="text-rose-500 ml-1 font-bold" title="Champ obligatoire">*</span>}
         </label>
         {badge && (
-          <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+          <span className="text-xs font-semibold text-[#002a40] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
             {badge}
           </span>
         )}
       </div>
 
-      <div className="relative rounded-lg shadow-xs">
+      <div className="relative rounded-lg shadow-2xs">
         {Icon && (
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <Icon className="h-4 w-4" />
@@ -64,7 +64,7 @@ export default function FormInput({
               ? 'bg-slate-100 text-slate-600 border-slate-200 cursor-not-allowed'
               : error
               ? 'border-rose-400 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-2 focus:ring-rose-200 focus:outline-none'
-              : 'border-slate-300 bg-white text-slate-900 hover:border-slate-400 focus:border-blue-700 focus:ring-2 focus:ring-blue-100 focus:outline-none'
+              : 'border-slate-300 bg-white text-slate-900 hover:border-slate-400 focus:border-[#002a40] focus:ring-2 focus:ring-blue-100 focus:outline-none'
           } border ${inputClassName}`}
         />
       </div>
@@ -84,4 +84,3 @@ export default function FormInput({
     </div>
   );
 }
-

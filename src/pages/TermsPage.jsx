@@ -20,31 +20,31 @@ export default function TermsPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Intro Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-md border border-slate-800">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/30">
+      {/* Human-Designed White & Blue Intro Banner */}
+      <div className="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 border-l-4 border-l-[#002a40] shadow-xs">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-50 text-[#002a40] text-xs font-bold mb-2.5 border border-blue-200">
             <span>Étape 2 sur 3</span>
             <span>•</span>
             <span>Conditions d'Acceptation</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#002a40] mb-2">
             Conditions générales de règlement
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
             Veuillez lire attentivement les dispositions réglementaires relatives au virement bancaire ci-dessous.
           </p>
         </div>
       </div>
 
       {/* Main Administrative Document Container */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 space-y-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6 sm:p-10 space-y-6">
         {/* Dossier Reference Pill */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-blue-50/60 rounded-lg border border-blue-100 text-xs">
           <div className="flex items-center gap-2">
-            <Bookmark className="w-4 h-4 text-slate-700" />
+            <Bookmark className="w-4 h-4 text-[#002a40]" />
             <span className="text-slate-600">Dossier en cours :</span>
-            <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
+            <span className="font-mono font-bold text-[#002a40] bg-white px-2.5 py-0.5 rounded border border-blue-200">
               {formData.reference || 'DOSSIER-NON-DEFINI'}
             </span>
           </div>
@@ -54,42 +54,39 @@ export default function TermsPage() {
             </div>
           )}
           <div className="text-slate-600">
-            Montant : <strong className="text-slate-900">{formData.amount} €</strong>
+            Montant : <strong className="text-[#002a40]">{formData.amount} €</strong>
           </div>
         </div>
 
-        {/* ======================================================== */}
-        {/* OFFICIAL ADMINISTRATIVE DOCUMENT FORMATTING              */}
-        {/* (Clean legal document structure, no blog quote cards)    */}
-        {/* ======================================================== */}
+        {/* OFFICIAL ADMINISTRATIVE DOCUMENT FORMATTING */}
         <div className="bg-white border border-slate-300 rounded-xl p-6 sm:p-10 shadow-2xs divide-y divide-slate-200">
           {/* Article 1 */}
           <div className="pb-6 space-y-3">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+            <h2 className="text-base sm:text-lg font-bold text-[#002a40] tracking-tight">
               {organizationConfig.termsAndConditions.section1.title}
             </h2>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
               {organizationConfig.termsAndConditions.section1.body}
             </p>
           </div>
 
           {/* Article 2 */}
           <div className="pt-6 pb-6 space-y-3">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+            <h2 className="text-base sm:text-lg font-bold text-[#002a40] tracking-tight">
               {organizationConfig.termsAndConditions.section2.title}
             </h2>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed text-justify">
               {organizationConfig.termsAndConditions.section2.body}
             </p>
           </div>
 
-          {/* Mandatory Checkbox Agreement - Administrative Format */}
+          {/* Mandatory Checkbox Agreement in Soft Blue Tint Box */}
           <div className="pt-6">
             <div
-              className={`p-4 sm:p-5 rounded-xl border-2 transition-all ${
+              className={`p-4 sm:p-5 rounded-lg border transition-all ${
                 termsAccepted
-                  ? 'border-emerald-600 bg-emerald-50/30'
-                  : 'border-slate-300 bg-slate-50/60 hover:border-slate-400'
+                  ? 'border-blue-600 bg-blue-50/60'
+                  : 'border-slate-300 bg-slate-50/70 hover:border-slate-400'
               }`}
             >
               <label
@@ -102,11 +99,11 @@ export default function TermsPage() {
                     type="checkbox"
                     checked={termsAccepted}
                     onChange={(e) => setTermsAccepted(e.target.checked)}
-                    className="w-5 h-5 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                    className="w-5 h-5 text-blue-800 border-slate-300 rounded focus:ring-blue-600 focus:ring-2 cursor-pointer"
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-sm sm:text-base font-bold text-slate-900 block">
+                  <span className="text-sm sm:text-base font-bold text-[#002a40] block">
                     {organizationConfig.termsAndConditions.mandatoryCheckboxLabel}
                   </span>
                   <span className="text-xs text-slate-600 block leading-relaxed">
@@ -135,7 +132,7 @@ export default function TermsPage() {
           <button
             type="button"
             onClick={prevStep}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-sm transition-colors cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Retour aux informations</span>
@@ -145,9 +142,9 @@ export default function TermsPage() {
             type="button"
             onClick={handleSubmit}
             disabled={!termsAccepted}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-4 cursor-pointer ${
+            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg font-semibold text-sm transition-all focus:outline-none focus:ring-4 cursor-pointer ${
               termsAccepted
-                ? 'bg-blue-700 hover:bg-blue-800 text-white shadow-md hover:shadow-lg focus:ring-blue-100 cursor-pointer'
+                ? 'bg-[#0b6ba8] hover:bg-[#002a40] text-white shadow-xs focus:ring-blue-100 cursor-pointer'
                 : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none'
             }`}
           >

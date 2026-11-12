@@ -12,7 +12,6 @@ export default function CopyButton({ text, label = 'Copier', fieldName = '', cla
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
       } else {
-        // Fallback for non-https or older browser environments
         const textArea = document.createElement('textarea');
         textArea.value = text;
         textArea.style.position = 'fixed';
@@ -36,10 +35,10 @@ export default function CopyButton({ text, label = 'Copier', fieldName = '', cla
     <button
       type="button"
       onClick={handleCopy}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer no-print ${
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer no-print ${
         copied
-          ? 'bg-emerald-600 text-white shadow-sm ring-emerald-500'
-          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-300 ring-slate-400'
+          ? 'bg-[#0b6ba8] text-white shadow-xs ring-blue-500'
+          : 'bg-white hover:bg-blue-50 text-slate-700 hover:text-[#0b6ba8] hover:border-[#0b6ba8] border border-slate-300 ring-blue-400'
       } ${className}`}
       aria-label={`Copier ${fieldName || text}`}
       title={`Copier ${fieldName || text}`}
@@ -58,4 +57,3 @@ export default function CopyButton({ text, label = 'Copier', fieldName = '', cla
     </button>
   );
 }
-
