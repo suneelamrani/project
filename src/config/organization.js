@@ -39,7 +39,7 @@ export const organizationConfig = {
     reference: "DOS-2026-78492",
     amount: "135.00",
     currency: "€",
-    infractionType: "Amende forfaitaire de stationnement",
+    infractionType: "Amende forfaitaire",
   },
 
   // Contact Information (Phone and email removed per client request)

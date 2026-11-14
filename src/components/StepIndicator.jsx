@@ -125,7 +125,12 @@ export default function StepIndicator() {
         {/* Visual Progress Bar */}
         <div className="w-full bg-slate-200/80 h-2 rounded-full mt-3 sm:mt-4 overflow-hidden">
           <div
-            className="h-full bg-[#0b6ba8] transition-all duration-300 ease-out rounded-full"
+            className="h-full bg
+            
+            
+            
+            
+            -[#0b6ba8] transition-all duration-300 ease-out rounded-full"
             style={{
               width: currentStep === 1 ? '33.33%' : currentStep === 2 ? '66.66%' : '100%',
             }}
