@@ -20,7 +20,9 @@ Le parcours utilisateur se déroule en trois étapes avec validation stricte et 
      - *1. Modalités de règlement par virement bancaire*
      - *2. Conditions générales et acceptation*
    - Case à cocher obligatoire : **« J'ai lu et j'accepte les conditions générales »** (initialement décochée).
-   - Bouton de poursuite désactivé tant que la case n'est pas cochée.
+   - Après acceptation, choix entre le paiement par carte via un lien HTTPS configuré et la poursuite du parcours par virement.
+   - Le paiement par carte reste indisponible tant que `cardPaymentUrl` dans `src/config/organization.js` n'est pas renseigné avec le lien de paiement approuvé.
+   - Bouton de poursuite par virement désactivé tant que la case n'est pas cochée.
    - Bouton de retour permettant de modifier les coordonnées de l'Étape 1.
 
 3. **Étape 3 – Bordereau d'Instructions de Virement / Facture (`InvoicePage.jsx`)**

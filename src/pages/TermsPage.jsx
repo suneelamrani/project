@@ -1,6 +1,18 @@
-import { ArrowRight, ArrowLeft, Bookmark, AlertCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Bookmark, AlertCircle, CreditCard } from 'lucide-react';
 import { useFormContext } from '../context/FormContext';
 import { organizationConfig } from '../config/organization';
+
+function getSecureCardPaymentUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' ? url.href : null;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      return null;
+    }
+    throw error;
+  }
+}
 
 export default function TermsPage() {
   const {
@@ -10,6 +22,7 @@ export default function TermsPage() {
     nextStep,
     prevStep,
   } = useFormContext();
+  const cardPaymentUrl = getSecureCardPaymentUrl(organizationConfig.cardPaymentUrl);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,19 +151,47 @@ export default function TermsPage() {
             <span>Retour aux informations</span>
           </button>
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!termsAccepted}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg font-semibold text-sm transition-all focus:outline-none focus:ring-4 cursor-pointer ${
-              termsAccepted
-                ? 'bg-[#0b6ba8] hover:bg-[#002a40] text-white shadow-xs focus:ring-blue-100 cursor-pointer'
-                : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none'
-            }`}
-          >
-            <span>Voir les instructions de virement</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="w-full sm:w-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-2">
+              {cardPaymentUrl && termsAccepted ? (
+                <a
+                  href={cardPaymentUrl}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm transition-colors focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Payer par carte</span>
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-slate-200 text-slate-400 border border-slate-300 font-semibold text-sm cursor-not-allowed"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Payer par carte</span>
+                </button>
+              )}
+              {!cardPaymentUrl && (
+                <p role="status" className="text-xs text-slate-500 text-center sm:max-w-52">
+                  Le paiement par carte n'est pas encore configuré. Vous pouvez continuer par virement.
+                </p>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!termsAccepted}
+              className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all focus:outline-none focus:ring-4 ${
+                termsAccepted
+                  ? 'bg-[#0b6ba8] hover:bg-[#002a40] text-white shadow-xs focus:ring-blue-100 cursor-pointer'
+                  : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none'
+              }`}
+            >
+              <span>Voir les instructions de virement</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

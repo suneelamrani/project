@@ -108,6 +108,53 @@ describe('Website Rebuild - 3-Step Bank Transfer Settlement Workflow', () => {
     expect(proceedBtn).not.toBeDisabled();
   });
 
+  it('Step 2: keeps card payment unavailable until a secure checkout URL is configured', () => {
+    const originalCardPaymentUrl = organizationConfig.cardPaymentUrl;
+    organizationConfig.cardPaymentUrl = '';
+
+    try {
+      render(<App />);
+
+      fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Jean Dupont' } });
+      fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'jean@dupont.fr' } });
+      fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
+      fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
+
+      const cardButton = screen.getByRole('button', { name: /Payer par carte/i });
+      expect(cardButton).toBeDisabled();
+      expect(screen.getByRole('status')).toHaveTextContent(/n'est pas encore configuré/i);
+
+      fireEvent.click(screen.getByLabelText(/J'ai lu et j'accepte les conditions générales/i));
+      expect(screen.getByRole('button', { name: /Voir les instructions de virement/i })).toBeEnabled();
+      expect(cardButton).toBeDisabled();
+    } finally {
+      organizationConfig.cardPaymentUrl = originalCardPaymentUrl;
+    }
+  });
+
+  it('Step 2: links to configured HTTPS card checkout only after terms are accepted', () => {
+    const originalCardPaymentUrl = organizationConfig.cardPaymentUrl;
+    organizationConfig.cardPaymentUrl = 'https://checkout.stripe.com/c/pay/cs_test_placeholder';
+
+    try {
+      render(<App />);
+
+      fireEvent.change(screen.getByLabelText(/Nom et Prénom/i), { target: { value: 'Jean Dupont' } });
+      fireEvent.change(screen.getByLabelText(/Adresse e-mail de contact/i), { target: { value: 'jean@dupont.fr' } });
+      fireEvent.change(screen.getByLabelText(/Numéro de téléphone/i), { target: { value: '06 12 34 56 78' } });
+      fireEvent.click(screen.getByRole('button', { name: /Continuer vers les conditions/i }));
+
+      expect(screen.getByRole('button', { name: /Payer par carte/i })).toBeDisabled();
+      fireEvent.click(screen.getByLabelText(/J'ai lu et j'accepte les conditions générales/i));
+
+      const cardLink = screen.getByRole('link', { name: /Payer par carte/i });
+      expect(cardLink).toHaveAttribute('href', organizationConfig.cardPaymentUrl);
+      expect(screen.getByRole('button', { name: /Voir les instructions de virement/i })).toBeEnabled();
+    } finally {
+      organizationConfig.cardPaymentUrl = originalCardPaymentUrl;
+    }
+  });
+
   it('Backward navigation: navigates backward to Step 1 and preserves entered data', () => {
     render(<App />);
 

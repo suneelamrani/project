@@ -34,6 +34,9 @@ export const organizationConfig = {
     currency: "EUR (€)",
   },
 
+  // Set to the approved HTTPS card checkout URL when it is available.
+  cardPaymentUrl: "",
+
   // Official Dossier Details decided by administrator (not editable by client)
   dossier: {
     reference: "DOS-2026-78492",
